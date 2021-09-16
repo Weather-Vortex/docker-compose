@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo
+    networks:
+      - vortex
+    ports:
+      - "27017:27017"
+    restart: always
+
+  station:
+    depends_on:
+      - mongo
+    environment:
+      - AUTH_KEY=1234asdf1234asdf1234asdf1234asdf
+      - DEVICE_NAME=Docker Station
+    image: antonioparolisi/weather-vortex-station
+    networks:
+      - vortex
+    ports:
+      - "15600:15600"
+
+  server:
+    depends_on:
+      - mongo
+    environment:
+      - CLIENT_URL=http://localhost:8080
+      - MONGODB_URI=mongodb://mongo/test
+      - USEREMAIL=${USEREMAIL}
+      - PWDMAIL=${PWDMAIL}
+      - SECRET=${SECRET}
+      - OPEN_WEATHER_MAP_API_KEY=${OPEN_WEATHER_MAP_API_KEY}
+      - TROPOSPHERE_API_KEY=${TROPOSPHERE_API_KEY}
+    image: antonioparolisi/weather-vortex-server
+    networks:
+      - vortex
+    ports:
+      - "12000:12000"
+
+  client:
+    depends_on:
+      - server
+    environment:
+      - PUBLIC_PATH=/
+      - VUE_APP_SERVER_URL=localhost:12000
+    image: antonioparolisi/wv-client # antonioparolisi/weather-vortex-client
+    networks:
+      - vortex
+    ports:
+      - "8080:8080"
+
+networks:
+  vortex:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: "vortex-net"
