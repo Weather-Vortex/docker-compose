@@ -30,6 +30,7 @@ services:
       - USEREMAIL=${USEREMAIL}
       - PWDMAIL=${PWDMAIL}
       - SECRET=${SECRET}
+      - RESET_PASSWORD_KEY=${RESET_PASSWORD_KEY}
       - OPEN_WEATHER_MAP_API_KEY=${OPEN_WEATHER_MAP_API_KEY}
       - TROPOSPHERE_API_KEY=${TROPOSPHERE_API_KEY}
     image: antonioparolisi/weather-vortex-server
