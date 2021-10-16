@@ -8,6 +8,19 @@ services:
     ports:
       - "27017:27017"
     restart: always
+    
+  mongo-seed:
+    depends_on:
+      - mongo
+    image: stefanwalther/mongo-seed
+    environment:
+      - MONGODB_HOST=mongo
+      - MONGODB_PORT=27017
+    volumes:
+      - ./mongo-seed:/data
+    command: mongorestore --host mongo --port 27017 --drop --db test data/dump/test
+    networks:
+      - app-network
 
   station:
     depends_on:
